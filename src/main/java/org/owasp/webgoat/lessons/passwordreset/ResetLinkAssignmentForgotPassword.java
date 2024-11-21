@@ -23,6 +23,8 @@
 package org.owasp.webgoat.lessons.passwordreset;
 
 import java.util.UUID;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.owasp.webgoat.container.assignments.AssignmentEndpoint;
 import org.owasp.webgoat.container.assignments.AttackResult;
@@ -68,6 +70,9 @@ public class ResetLinkAssignmentForgotPassword extends AssignmentEndpoint {
     String resetLink = UUID.randomUUID().toString();
     ResetLinkAssignment.resetLinks.add(resetLink);
     String host = request.getHeader("host");
+    if (!isValidHost(host)) {
+        return failed(this).output("Invalid host header.").build();
+    }
     if (ResetLinkAssignment.TOM_EMAIL.equals(email)
         && (host.contains(webWolfPort)
             || host.contains(webWolfHost))) { // User indeed changed the host header.
@@ -111,4 +116,8 @@ public class ResetLinkAssignmentForgotPassword extends AssignmentEndpoint {
       // don't care
     }
   }
+    private boolean isValidHost(String host) {
+        List<String> allowedHosts = Arrays.asList(webWolfHost, "another-allowed-host.com");
+        return allowedHosts.contains(host);
+    }
 }
