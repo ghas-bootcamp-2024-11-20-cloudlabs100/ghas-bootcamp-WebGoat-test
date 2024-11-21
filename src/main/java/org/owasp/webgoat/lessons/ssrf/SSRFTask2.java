@@ -46,7 +46,8 @@ public class SSRFTask2 extends AssignmentEndpoint {
   }
 
   protected AttackResult furBall(String url) {
-    if (url.matches("http://ifconfig.pro")) {
+    List<String> authorizedUrls = List.of("http://ifconfig.pro");
+    if (authorizedUrls.contains(url)) {
       String html;
       try (InputStream in = new URL(url).openStream()) {
         html =
